@@ -1,18 +1,35 @@
 const path = require('path');
+const pkg = require('./package.json');
 
-module.exports = [
-  'source-map'
-].map(devtool => ({
-  mode: 'development',
-  entry: './src/index.js',
+const config = {
+  entry: __dirname + '/src/index.js',
+  devtool: 'source-map',
+  mode: 'production',
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: __dirname + '/lib',
     filename: 'livetiming-analysis.js',
-    library: 'livetiming-analysis',
-    libraryTarget: 'umd'
+    library: pkg.name,
+    libraryTarget: 'umd',
+    umdNamedDefine: true
   },
-  devtool,
-  optimization: {
-    runtimeChunk: true
+  module: {
+    rules: [
+      {
+        test: /(\.jsx|\.js)$/,
+        loader: 'babel-loader',
+        exclude: /(node_modules)/
+      },
+      {
+        test: /(\.jsx|\.js)$/,
+        loader: 'eslint-loader',
+        exclude: /node_modules/
+      }
+    ]
+  },
+  resolve: {
+    modules: [path.resolve('./node_modules'), path.resolve('./src')],
+    extensions: ['.json', '.js']
   }
-}));
+};
+
+module.exports = config;

@@ -1,4 +1,4 @@
 /node_modules/
 bundle-size.txt
 build/
-dist/
+lib/

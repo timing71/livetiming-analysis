@@ -2,12 +2,21 @@
   "name": "livetiming-analysis",
   "version": "0.0.1",
   "description": "Timing71 analysis and prediction library",
-  "main": "dist/livetiming-analysis.js",
+  "main": "lib/livetiming-analysis.js",
   "repository": "https://github.com/timing71/livetiming-analysis",
   "author": "James Muscat <jamesremuscat@gmail.com>",
   "license": "AGPL-3.0-or-later",
   "devDependencies": {
+    "@babel/core": "^7.8.4",
+    "babel-eslint": "^10.0.3",
+    "babel-loader": "^8.0.6",
+    "eslint": "^6.8.0",
+    "eslint-loader": "^3.0.3",
+    "eslint-plugin-babel": "^5.3.0",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10"
+  },
+  "scripts": {
+    "build": "webpack"
   }
 }
