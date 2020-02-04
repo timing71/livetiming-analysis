@@ -16,8 +16,20 @@ const EMPTY_DATASET = {
 export default class Analysis {
 
   constructor() {
-    this.reset();
+    this._onChange = () => {};
     this.update = this.update.bind(this);
+    this.setData = this.setData.bind(this);
+    this.onChange = this.onChange.bind(this);
+    this.reset();
+  }
+
+  /**
+   * Set a handler function to be called when data changes. This function should
+   * require no arguments.
+   * @param {?function} func - Callback function. Will be called when data changes.
+   */
+  onChange(func) {
+    this._onChange = func || (() => {});
   }
 
   /**
@@ -31,6 +43,8 @@ export default class Analysis {
     this._cachingObjects = [
       this.messages
     ];
+
+    this._onChange();
   }
 
   /**
@@ -42,8 +56,9 @@ export default class Analysis {
       ...data
     };
     this._cachingObjects.forEach(
-      co => co.invalidateAllCaches()
+      co => co.setData(this._data)
     );
+    this._onChange();
   }
 
   /**
@@ -52,16 +67,13 @@ export default class Analysis {
    * @param {Object.<string, Object>} data - The data to merge
    */
   update(key, data) {
-    this._data = {
-      ...this._data,
-      [key]: {
-        ...this._data[key],
-        ...data
-      }
+    this._data[key] = {
+      ...this._data[key],
+      ...data
     };
     this._cachingObjects.forEach(
       co => co.invalidateCacheFor(key)
     );
+    this._onChange();
   }
-
 };

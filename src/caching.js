@@ -19,6 +19,12 @@ export class CachingObject {
   constructor() {
     this.invalidateAllCaches = this.invalidateAllCaches.bind(this);
     this.invalidateCacheFor = this.invalidateCacheFor.bind(this);
+    this.setData = this.setData.bind(this);
+  }
+
+  setData(data) {
+    this._data = data;
+    this.invalidateAllCaches();
   }
 
   caches() {

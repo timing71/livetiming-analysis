@@ -8,11 +8,13 @@ describe(
       () => {
         const a = new Analysis();
 
+        const originalData = a._data;
         expect(a._data.messages).toEqual({ messages: [] });
 
         a.update('messages', { messages: ['foo'] });
 
         expect(a._data.messages).toEqual({ messages: ['foo'] });
+        expect(a._data).toBe(originalData);
 
         expect(a._data.lap).toEqual({});
         a.update('lap', { 1: ['foo'] });
