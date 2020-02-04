@@ -1,3 +1,5 @@
+import Messages from "./messages";
+
 const EMPTY_DATASET = {
   state: {},
   driver: {},
@@ -23,6 +25,8 @@ export default class Analysis {
    */
   reset() {
     this._data = EMPTY_DATASET;
+
+    this.messages = new Messages(this._data);
   }
 
   /**
