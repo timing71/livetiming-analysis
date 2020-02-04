@@ -17,6 +17,17 @@
     "node": true,
     "mocha": true
   },
+  "overrides": [
+    {
+      "files": ["**/__tests__/*.js"],
+      "env": {
+        "jest": true
+      },
+      "plugins": [
+        "jest"
+      ]
+    }
+  ],
   "rules": {
     "array-callback-return": "warn",
     "camelcase": "warn",
@@ -131,7 +142,7 @@
     "no-restricted-syntax": [
       "warn",
       "LabeledStatement",
-      "WithStatement",
+      "WithStatement"
     ],
     "no-script-url": "warn",
     "no-self-assign": "warn",
@@ -198,6 +209,6 @@
       "never"
     ],
     "use-isnan": "warn",
-    "valid-typeof": "warn",
+    "valid-typeof": "warn"
   }
 }

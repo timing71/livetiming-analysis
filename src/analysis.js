@@ -1,7 +1,7 @@
 const EMPTY_DATASET = {
   state: {},
   driver: {},
-  messages: [],
+  messages: { messages: [] },
   car_messages: {}, // eslint-disable-line camelcase
   static: {},
   stint: {},
@@ -45,7 +45,7 @@ export default class Analysis {
       ...this._data,
       [key]: {
         ...this._data[key],
-        data
+        ...data
       }
     };
   }
