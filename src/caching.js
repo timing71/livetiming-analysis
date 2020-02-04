@@ -14,6 +14,7 @@ export const cache = (keys, func) => {
   innerFunc.clearCache = () => { cache = {}; handler(); };
   innerFunc.onChange = (handlerFunc) => {
     handler = handlerFunc || noOp;
+    handler();
   };
   Object.defineProperty(innerFunc, 'name', { value: `cached ${func.name}` });
   return innerFunc;
@@ -22,7 +23,8 @@ export const cache = (keys, func) => {
 
 export class CachingObject {
 
-  constructor() {
+  constructor(data) {
+    this._data = data;
     this.invalidateAllCaches = this.invalidateAllCaches.bind(this);
     this.invalidateCacheFor = this.invalidateCacheFor.bind(this);
     this.setData = this.setData.bind(this);
