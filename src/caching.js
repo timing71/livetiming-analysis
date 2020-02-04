@@ -1,5 +1,8 @@
+const noOp = () => {};
+
 export const cache = (keys, func) => {
   let cache = {};
+  let handler = noOp;
   const innerFunc = () => {
     if (!cache.value) {
       cache['value'] = func();
@@ -8,7 +11,10 @@ export const cache = (keys, func) => {
   };
 
   innerFunc.cacheKeys = keys || [];
-  innerFunc.clearCache = () => { cache = {}; };
+  innerFunc.clearCache = () => { cache = {}; handler(); };
+  innerFunc.onChange = (handlerFunc) => {
+    handler = handlerFunc || noOp;
+  };
   Object.defineProperty(innerFunc, 'name', { value: `cached ${func.name}` });
   return innerFunc;
 };
