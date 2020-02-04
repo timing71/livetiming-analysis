@@ -49,6 +49,25 @@ describe(
         const messages = new Messages(data);
         expect(messages.get()).toEqual([]);
       }
-    )
+    );
+
+    test(
+      'caches results',
+      () => {
+        const data = {
+          messages: {
+            messages: [[1, 'message']]
+          }
+        };
+        const messages = new Messages(data);
+        expect(messages.get().length).toEqual(1);
+
+        data.messages['messages'] = [];
+        expect(messages.get().length).toEqual(1);
+        messages.invalidateCacheFor('messages');
+        expect(messages.get().length).toEqual(0);
+
+      }
+    );
   }
 );

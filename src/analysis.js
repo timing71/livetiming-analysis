@@ -27,6 +27,10 @@ export default class Analysis {
     this._data = EMPTY_DATASET;
 
     this.messages = new Messages(this._data);
+
+    this._cachingObjects = [
+      this.messages
+    ];
   }
 
   /**
@@ -37,6 +41,9 @@ export default class Analysis {
     this._data = {
       ...data
     };
+    this._cachingObjects.forEach(
+      co => co.invalidateAllCaches()
+    );
   }
 
   /**
@@ -52,6 +59,9 @@ export default class Analysis {
         ...data
       }
     };
+    this._cachingObjects.forEach(
+      co => co.invalidateCacheFor(key)
+    );
   }
 
 };

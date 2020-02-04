@@ -1,9 +1,15 @@
+import { CachingObject, cache } from "./caching";
+
 const sortByIndex = (index) => (a, b) => b[index] - a[index];
 
-export default class Messages {
+export default class Messages extends CachingObject {
   constructor(data) {
+    super();
     this._data = data;
-    this.get = this.get.bind(this);
+    this.get = cache(
+      ['car_messages', 'messages', 'state'],
+      this.get.bind(this)
+    );
   }
 
   get() {
