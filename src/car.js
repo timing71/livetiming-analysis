@@ -1,6 +1,6 @@
 import { CachingObject, cache } from "./caching";
 
-class Car extends CachingObject {
+export class Car extends CachingObject {
   constructor(data, raceNum) {
     super(data);
     this.raceNum = raceNum;
@@ -11,6 +11,39 @@ class Car extends CachingObject {
       ['driver', 'static'],
       this.identifyingString.bind(this)
     );
+
+    this._fieldExtractor = cache(
+      ['service'],
+      this._fieldExtractor.bind(this)
+    );
+  }
+
+  _fieldExtractor() {
+    const colSpec = this._data.service.colSpec;
+    const carState = (this._data.state || {})['cars'] || [];
+
+    return (stat, defaultValue=null) => {
+      const raceNumIdx = colSpec.findIndex(s => s[0] === 'Num');
+      const thisCar = carState.find(c => c[raceNumIdx] === this.raceNum);
+      if (!thisCar || !stat) {
+        return defaultValue;
+      }
+
+      let statKey;
+      if (Array.isArray(stat)) {
+        statKey = stat[0];
+      }
+      else {
+        statKey = stat;
+      }
+
+      const statIdx = colSpec.findIndex((s) => s[0] === statKey);
+      return thisCar[statIdx] || defaultValue;
+    };
+  }
+
+  currentStat(stat, defaultValue=null) {
+    return this._fieldExtractor()(stat, defaultValue);
   }
 
   staticData() {
@@ -59,11 +92,13 @@ export class Cars extends CachingObject {
   }
 
   hash() {
-    return Object.fromEntries(
-      Object.keys(this._data.static || this._data.car || {}).map(
-        carNum => [carNum, new Car(this._data, carNum)]
-      )
+    const result = {};
+    Object.keys(this._data.static || this._data.car || {}).forEach(
+      carNum => {
+        result[carNum] = new Car(this._data, carNum);
+      }
     );
+    return result;
   }
 
   all() {
