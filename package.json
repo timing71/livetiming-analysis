@@ -22,7 +22,8 @@
   },
   "scripts": {
     "build": "webpack",
-    "test": "jest"
+    "test": "jest",
+    "prepare": "yarn run build"
   },
   "babel": {
     "presets": [
