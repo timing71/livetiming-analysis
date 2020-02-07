@@ -1,6 +1,7 @@
 import Messages from "./messages";
 import Session from "./session";
 import { Cars } from "./car";
+import State from "./state";
 
 const EMPTY_DATASET = {
   state: {},
@@ -43,11 +44,13 @@ export default class Analysis {
     this.cars = new Cars(this._data);
     this.messages = new Messages(this._data);
     this.session = new Session(this._data);
+    this.state = new State(this._data);
 
     this._cachingObjects = [
       this.cars,
       this.messages,
-      this.session
+      this.session,
+      this.state
     ];
 
     this._onChange();
