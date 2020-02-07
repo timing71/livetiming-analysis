@@ -85,6 +85,6 @@ describe('Car', () => {
       data['static'][6] = ['Clazz', '', 'CarType'];
       const car = new Car(data, 6);
       expect(car.identifyingString()).toEqual('#6 - CarType');
-    })
+    });
   });
 });
