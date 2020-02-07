@@ -13,6 +13,7 @@ export default class Session extends CachingObject {
     );
 
     this.leaderLap = cache('session', this.leaderLap.bind(this));
+    this.currentTimestamp = cache('session', this.currentTimestamp.bind(this));
   }
 
   leaderLap() {
@@ -21,6 +22,10 @@ export default class Session extends CachingObject {
 
   flagHistory() {
     return this._data.session.flagStats || [];
+  }
+
+  currentTimestamp() {
+    return (this._data.session || {})['currentTimestamp'] || Date.now();
   }
 
   aggregateFlagStats() {
@@ -32,17 +37,20 @@ export default class Session extends CachingObject {
           return accum;
         }
 
+        const thisPeriodEnd = endTime || this.currentTimestamp() || Date.now();
+        const thisPeriodEndLap = endLap || this.leaderLap();
+
         if (!accum[flagType]) {
           accum[flagType] = {
             count: 1,
-            time: (endTime || Date.now()) - startTime,
-            laps: endLap - startLap
+            time: thisPeriodEnd - startTime,
+            laps: thisPeriodEndLap - startLap
           };
         }
         else {
           accum[flagType].count += 1;
-          accum[flagType].time += (endTime || Date.now()) - startTime;
-          accum[flagType].laps += (endLap - startLap);
+          accum[flagType].time += (thisPeriodEnd - startTime);
+          accum[flagType].laps += (thisPeriodEndLap - startLap);
         }
 
         return accum;
