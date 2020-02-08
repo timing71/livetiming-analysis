@@ -1,4 +1,5 @@
 import { CachingObject, cache } from "./caching";
+import { Stints } from "./stint";
 
 export class Car extends CachingObject {
   constructor(data, raceNum) {
@@ -16,6 +17,8 @@ export class Car extends CachingObject {
       ['service'],
       this._fieldExtractor.bind(this)
     );
+
+    this.stints = new Stints(this._data, this.raceNum, this.drivers);
   }
 
   _fieldExtractor() {
@@ -77,6 +80,16 @@ export class Car extends CachingObject {
 
     return `#${this.raceNum}`;
   }
+
+  invalidateAllCaches() {
+    super.invalidateAllCaches();
+    this.stints.invalidateAllCaches();
+  }
+
+  invalidateCacheFor(...keys) {
+    super.invalidateCacheFor(...keys);
+    this.stints.invalidateCacheFor(...keys);
+  }
 }
 
 export class Cars extends CachingObject {
@@ -107,5 +120,14 @@ export class Cars extends CachingObject {
 
   get(raceNum) {
     return this.hash()[raceNum];
+  }
+
+  // If invalidateAllCaches is called, then we'll recreate all Cars anyway
+
+  invalidateCacheFor(...keys) {
+    super.invalidateCacheFor(...keys);
+    Object.values(this.hash()).forEach(
+      car => car.invalidateCacheFor(...keys)
+    );
   }
 }
