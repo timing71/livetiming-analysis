@@ -24,6 +24,7 @@ export default class Analysis {
     this.update = this.update.bind(this);
     this.setData = this.setData.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.accuracy = this.accuracy.bind(this);
     this.reset();
   }
 
@@ -57,6 +58,10 @@ export default class Analysis {
     ];
 
     this._onChange();
+  }
+
+  accuracy() {
+    return (this._data.service || {})['pollInterval'];
   }
 
   /**

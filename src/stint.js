@@ -11,7 +11,9 @@ const makeStintObject = (drivers) => (stint) =>({
   bestLap: stint[6],
   yellowLaps: stint[7],
   averageLap: stint[8],
-  laptimes: stint[9]
+  laptimes: stint[9],
+  stintDuration: stint[3] ? stint[3] - stint[1] : undefined,
+  stintDurationLaps: stint[2] ? stint[2] - stint[0] + 1 : undefined
 });
 
 export class Stints extends CachingObject {

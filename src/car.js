@@ -117,6 +117,36 @@ export class Car extends CachingObject {
     );
   }
 
+  aggregateStintStats(currentTimestamp) {
+    const stops = this.pitStops();
+
+    return stops.reduce(
+      (accum, stop) => {
+        if (stop.inTime) {
+          accum['totalStops'] += 1;
+          accum['longestStintLaps'] = accum['longestStintLaps'] ? Math.max(accum['longestStintLaps'], stop.stintDurationLaps) : stop.stintDurationLaps;
+          accum['shortestStintLaps'] = accum['shortestStintLaps'] ? Math.min(accum['shortestStintLaps'], stop.stintDurationLaps) : stop.stintDurationLaps;
+          accum['longestStint'] = accum['longestStint'] ? Math.max(accum['longestStint'], stop.stintDuration) : stop.stintDuration;
+          accum['shortestStint'] = accum['shortestStintL'] ? Math.min(accum['shortestStint'], stop.stintDuration) : stop.stintDuration;
+        }
+
+        if (stop.stopDuration) {
+          accum['timeInPit'] += stop.stopDuration;
+        }
+        else if (stop.inTime) {
+          accum['timeInPit'] += (currentTimestamp - stop.inTime);
+        }
+
+        return accum;
+      },
+      {
+        totalStops: 0,
+        timeInPit: 0
+      }
+    );
+
+  }
+
   invalidateAllCaches() {
     super.invalidateAllCaches();
     this.stints.invalidateAllCaches();
