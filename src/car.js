@@ -102,6 +102,11 @@ export class Cars extends CachingObject {
     );
     this.all = this.all.bind(this);
     this.get = this.get.bind(this);
+
+    this.inClassificationOrder = cache(
+      ['state', 'service', 'static'],
+      this.inClassificationOrder.bind(this)
+    );
   }
 
   hash() {
@@ -120,6 +125,18 @@ export class Cars extends CachingObject {
 
   get(raceNum) {
     return this.hash()[raceNum];
+  }
+
+  inClassificationOrder() {
+    if (this._data.service && this._data.state) {
+      const raceNumIdx = this._data.service.colSpec.findIndex(s => s[0] === 'Num');
+
+      const order = this._data.state.cars.map(c => c[raceNumIdx]);
+      const cars = this.hash();
+
+      return order.map(num => cars[num]);
+    }
+    return this.all();
   }
 
   // If invalidateAllCaches is called, then we'll recreate all Cars anyway
