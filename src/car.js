@@ -81,6 +81,42 @@ export class Car extends CachingObject {
     return `#${this.raceNum}`;
   }
 
+  estimatedMaxStint(yellowLapFactor = 0.5) {
+    const stints = this.stints.all();
+    const lapsPerStint = stints.map(
+      s => Math.ceil((s.endLap - s.startLap + 1) - (yellowLapFactor * s.yellowLaps))
+    );
+    return Math.max(...lapsPerStint);
+  }
+
+  pitStops() {
+    const stints = this.stints.all();
+    return stints.map(
+      (stint, idx) => {
+        const nextStint = stints[idx + 1];
+
+        const pitstop = {
+          outLap: stint.startLap,
+          outTime: stint.startTime,
+          yellowLaps: stint.yellowLaps
+        };
+
+        if (!stint.inProgress) {
+          pitstop['inLap'] = stint.inProgress ? null : stint.endLap;
+          pitstop['inTime'] = stint.inProgress ? null : stint.endTime;
+          pitstop['stintDuration'] = stint.endTime - stint.startTime;
+          pitstop['stintDurationLaps'] = stint.endLap - stint.startLap + 1;
+          pitstop['stopDuration'] = nextStint ? nextStint.startTime - stint.endTime : undefined;
+        }
+        else {
+          pitstop['inProgress'] = true;
+        }
+
+        return pitstop;
+      }
+    );
+  }
+
   invalidateAllCaches() {
     super.invalidateAllCaches();
     this.stints.invalidateAllCaches();
