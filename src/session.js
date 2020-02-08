@@ -14,6 +14,7 @@ export default class Session extends CachingObject {
 
     this.leaderLap = cache('session', this.leaderLap.bind(this));
     this.currentTimestamp = cache('session', this.currentTimestamp.bind(this));
+    this.distancePrediction = cache('state', this.distancePrediction.bind(this));
   }
 
   leaderLap() {
@@ -57,7 +58,50 @@ export default class Session extends CachingObject {
       },
       {}
     );
+  }
 
+  distancePrediction() {
+    const { state } = this._data;
+
+    if (!state || !state.session) {
+      return null;
+    }
+
+    const { session: { timeElapsed, timeRemain, lapsRemain } } = state;
+
+
+    const leaderLap = this.leaderLap();
+    const currentTimestamp = this.currentTimestamp();
+    const timeDelta = Date.now() - currentTimestamp;
+
+    const lapsPerSecond = (leaderLap - 1) / (timeElapsed - timeDelta);
+
+    if (lapsRemain) {
+      return {
+        laps: {
+          value: Math.max(0, lapsRemain),
+          predicted: false
+        },
+        time: {
+          value: Math.max(0, timeRemain || (lapsRemain / lapsPerSecond)),
+          predicted: !!timeRemain
+        }
+      };
+    }
+    if (timeRemain) {
+      return {
+        laps: {
+          value: Math.max(0, Math.ceil(timeRemain * lapsPerSecond) - 1),
+          predicted: true
+        },
+        time: {
+          value: Math.max(0, timeRemain),
+          predicted: false
+        }
+      };
+    }
+
+    return null;
 
   }
 };
