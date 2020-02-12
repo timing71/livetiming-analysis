@@ -72,7 +72,7 @@ export default class Session extends CachingObject {
 
     const leaderLap = this.leaderLap();
     const currentTimestamp = this.currentTimestamp();
-    const timeDelta = Date.now() - currentTimestamp;
+    const timeDelta = Math.max((Date.now() / 1000) - currentTimestamp, 0);
 
     const lapsPerSecond = (leaderLap - 1) / (timeElapsed - timeDelta);
 
