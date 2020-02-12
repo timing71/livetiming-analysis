@@ -22,10 +22,16 @@ export class Car extends CachingObject {
   }
 
   _fieldExtractor() {
-    const colSpec = this._data.service.colSpec;
-    const carState = (this._data.state || {})['cars'] || [];
-
     return (stat, defaultValue=null) => {
+
+      const colSpec = (this._data.service || {}).colSpec;
+
+      if (!colSpec) {
+        return defaultValue;
+      }
+
+      const carState = (this._data.state || {})['cars'] || [];
+
       const raceNumIdx = colSpec.findIndex(s => s[0] === 'Num');
       const thisCar = carState.find(c => c[raceNumIdx] === this.raceNum);
       if (!thisCar || !stat) {
