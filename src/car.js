@@ -95,7 +95,7 @@ export class Car extends CachingObject {
     return Math.max(...lapsPerStint);
   }
 
-  pitStops() {
+  pitStops(currentTimestamp) {
     const stints = this.stints.all();
     return stints.map(
       (stint, idx) => {
@@ -112,10 +112,15 @@ export class Car extends CachingObject {
           pitstop['inTime'] = stint.inProgress ? null : stint.endTime;
           pitstop['stintDuration'] = stint.endTime - stint.startTime;
           pitstop['stintDurationLaps'] = stint.endLap - stint.startLap + 1;
-          pitstop['stopDuration'] = nextStint ? nextStint.startTime - stint.endTime : undefined;
-        }
-        else {
-          pitstop['inProgress'] = true;
+
+          if (nextStint) {
+            pitstop['stopDuration'] = nextStint.startTime - stint.endTime;
+          }
+          else {
+            pitstop['inProgress'] = true;
+            pitstop['stopDuration'] = currentTimestamp - stint.endTime;
+          }
+
         }
 
         return pitstop;
@@ -200,7 +205,7 @@ export class Cars extends CachingObject {
   }
 
   inClassificationOrder() {
-    if (this._data.service && this._data.state) {
+    if (this._data.service && this._data.service.colSpec && this._data.state) {
       const raceNumIdx = this._data.service.colSpec.findIndex(s => s[0] === 'Num');
 
       const order = this._data.state.cars.map(c => c[raceNumIdx]);
