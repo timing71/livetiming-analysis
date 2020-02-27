@@ -60,7 +60,7 @@ export default class Session extends CachingObject {
     );
   }
 
-  distancePrediction() {
+  distancePrediction(minLapsRequired=10) {
     const { state } = this._data;
 
     if (!state || !state.session) {
@@ -83,7 +83,11 @@ export default class Session extends CachingObject {
           predicted: false
         },
         time: {
-          value: Math.max(0, timeRemain || (lapsRemain / lapsPerSecond)),
+          value: leaderLap < minLapsRequired ?
+            timeRemain ?
+              Math.max(0, timeRemain) :
+              timeRemain :
+            Math.max(0, timeRemain || (lapsRemain / lapsPerSecond)),
           predicted: !!timeRemain
         }
       };
@@ -91,7 +95,9 @@ export default class Session extends CachingObject {
     if (timeRemain) {
       return {
         laps: {
-          value: Math.max(0, Math.ceil(timeRemain * lapsPerSecond) - 1),
+          value: leaderLap < minLapsRequired ?
+            null :
+            Math.max(0, Math.ceil(timeRemain * lapsPerSecond)),
           predicted: true
         },
         time: {

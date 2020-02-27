@@ -67,7 +67,7 @@ describe('Session', () => {
       const prediction = session.distancePrediction();
 
       expect(prediction.laps.predicted).toBeTruthy();
-      expect(prediction.laps.value).toEqual(4);
+      expect(prediction.laps.value).toEqual(5);
 
       expect(prediction.time.predicted).toBeFalsy();
       expect(prediction.time.value).toEqual(15 * MINUTES);
