@@ -1,5 +1,6 @@
 import { CachingObject, cache } from "./caching";
 import { Stints } from "./stint";
+import { Predictions } from "./predictions";
 
 export class Car extends CachingObject {
   constructor(data, raceNum) {
@@ -19,6 +20,7 @@ export class Car extends CachingObject {
     );
 
     this.stints = new Stints(this._data, this.raceNum, this.drivers);
+    this.predictions = new Predictions(this._data, this);
   }
 
   _fieldExtractor() {
@@ -85,14 +87,6 @@ export class Car extends CachingObject {
     }
 
     return `#${this.raceNum}`;
-  }
-
-  estimatedMaxStint(yellowLapFactor = 0.5) {
-    const stints = this.stints.all();
-    const lapsPerStint = stints.map(
-      s => Math.ceil((s.endLap - s.startLap + 1) - (yellowLapFactor * s.yellowLaps))
-    );
-    return Math.max(...lapsPerStint);
   }
 
   pitStops(currentTimestamp) {
