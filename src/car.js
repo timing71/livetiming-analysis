@@ -1,6 +1,7 @@
 import { CachingObject, cache } from "./caching";
 import { Stints } from "./stint";
 import { Predictions } from "./predictions";
+import { Driver } from "./driver";
 
 export class Car extends CachingObject {
   constructor(data, raceNum) {
@@ -68,7 +69,9 @@ export class Car extends CachingObject {
   }
 
   drivers() {
-    return this._data.driver[this.raceNum] || [];
+    return (this._data.driver[this.raceNum] || []).map(
+      (d, idx) => new Driver(this._data, this, d, idx)
+    );
   }
 
   identifyingString() {
@@ -79,7 +82,7 @@ export class Car extends CachingObject {
 
     const drivers = this.drivers();
     if (drivers.length > 0) {
-      return `#${this.raceNum} - ${drivers[0]}`;
+      return `#${this.raceNum} - ${drivers[0].name}`;
     }
 
     if (sd.make) {

@@ -7,7 +7,7 @@ const makeStintObject = (drivers) => (stint) =>({
   endTime: stint[3],
   inProgress: stint[4],
   driverIdx: stint[5],
-  driver: drivers[stint[5]],
+  driver: drivers[stint[5]].name,
   bestLap: stint[6],
   yellowLaps: stint[7],
   averageLap: stint[8],
