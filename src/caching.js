@@ -3,9 +3,9 @@ const noOp = () => {};
 export const cache = (keys, func) => {
   let cache = {};
   let handler = noOp;
-  const innerFunc = () => {
+  const innerFunc = (...args) => {
     if (!cache.value) {
-      cache['value'] = func();
+      cache['value'] = func(...args);
     }
     return cache.value;
   };

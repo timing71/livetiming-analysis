@@ -98,7 +98,8 @@ export class Car extends CachingObject {
         const pitstop = {
           outLap: stint.startLap,
           outTime: stint.startTime,
-          yellowLaps: stint.yellowLaps
+          yellowLaps: stint.yellowLaps,
+          stintDurationLaps: stint.laptimes.length
         };
 
         if (!stint.inProgress) {

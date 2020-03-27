@@ -60,11 +60,15 @@ export default class Session extends CachingObject {
     );
   }
 
-  distancePrediction(minLapsRequired=10) {
+  distancePrediction(minLapsRequired=10, now=null) {
     const { state } = this._data;
 
     if (!state || !state.session) {
       return null;
+    }
+
+    if (!now) {
+      now = Date.now() / 1000;
     }
 
     const { session: { timeElapsed, timeRemain, lapsRemain } } = state;
@@ -72,7 +76,7 @@ export default class Session extends CachingObject {
 
     const leaderLap = this.leaderLap();
     const currentTimestamp = this.currentTimestamp();
-    const timeDelta = Math.max((Date.now() / 1000) - currentTimestamp, 0);
+    const timeDelta = Math.max(now - currentTimestamp, 0);
 
     const lapsPerSecond = (leaderLap - 1) / (timeElapsed - timeDelta);
 
