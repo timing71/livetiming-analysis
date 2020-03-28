@@ -12,7 +12,7 @@ const data = {
         4,
         1552205536.464016,
         true,
-        1,
+        0,
         71.622,
         3,
         80.643,
@@ -82,7 +82,7 @@ const data = {
         4,
         1552205536.464016,
         false,
-        1,
+        0,
         71.622,
         3,
         80.643,
@@ -162,7 +162,13 @@ const data = {
 
 describe('Stints', () => {
   test('collates stints correctly', () => {
-    const stints = new Stints(data, 42, () => data.driver[42]);
+    const stints = new Stints(
+      data,
+      42,
+      () => (
+        [{ name: data.driver[42][0] }, { name: data.driver[42][1] }]
+      )
+    );
 
     const all = stints.all();
     expect(all.length).toEqual(2);
@@ -180,20 +186,20 @@ describe('Stints', () => {
   });
 
   test('copes with no data', () => {
-    const stints = new Stints(data, 14, () => data.driver[14] || []);
+    const stints = new Stints(data, 14, () => ([{ name: 'Driver of 14' }]));
 
     expect(stints.all()).toEqual([]);
   });
 
   test('copes with only a current stint', () => {
-    const stints = new Stints(data, 1, () => data.driver[1] || []);
+    const stints = new Stints(data, 1, () => ([{ name: 'Driver of 1' }]));
     const all = stints.all();
     expect(all.length).toEqual(1);
     expect(all[0].inProgress).toBeTruthy();
   });
 
   test('copes with only past stint', () => {
-    const stints = new Stints(data, 24, () => data.driver[24] || []);
+    const stints = new Stints(data, 24, () => ([{ name: 'Driver of 24' }]));
     const all = stints.all();
     expect(all.length).toEqual(1);
     expect(all[0].inProgress).toBeFalsy();
